@@ -1,4 +1,4 @@
-m1kc URQ
+m1kc URQ [![Build Status](https://travis-ci.org/m1kc/murq.png?branch=master)](https://travis-ci.org/m1kc/murq)
 ========
 
 URQ interpreter written in CoffeeScript.
