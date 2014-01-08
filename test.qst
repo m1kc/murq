@@ -1,0 +1,16 @@
+pln If you can see this message, then m1kc URQ is working properly.
+
+pln Let's do a test. You should see '1324' on the next line.
+
+p 1
+goto three
+:two
+p 2
+goto four
+:three
+p 3
+goto two
+:four
+pln 4
+
+pln That's all, bye.

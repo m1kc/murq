@@ -9,5 +9,4 @@ URQ stands for "Universal Ripsoft Quest", a platform for developing text quests.
 Notes
 -----
 
-* Main file does not work properly, yet.
 * To run tests, type `grunt`.

@@ -16,8 +16,14 @@
 
 'use strict'
 
+fs = require 'fs'
+murq = require './lib/murq.coffee'
+
 console.log '// m1kc URQ //'
 
-murq = require './lib/murq.coffee'
-quest = new murq.Quest(';well\n\ndwell')
-quest.run()
+if process.argv.length != 3
+	console.log 'Usage: murq <filename>'
+else
+	filename = process.argv[2]
+	quest = new murq.Quest(fs.readFileSync(filename, 'utf-8'))
+	quest.run()
