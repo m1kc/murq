@@ -14,8 +14,7 @@
 
 'use strict'
 
-# TODO: coverage
-murq = require '../lib/murq.coffee'
+murq = require '../lib-cov/murq'
 
 @exports =
 	'should ignore blank lines': (test) ->

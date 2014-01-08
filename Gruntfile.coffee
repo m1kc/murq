@@ -50,6 +50,10 @@ module.exports = (grunt) ->
 			]
 			options: JSON.parse require('fs').readFileSync('.coffeelintrc').toString()
 
+		coffeeCoverage:
+			all:
+				src: 'lib/'
+				dest: 'lib-cov/'
 
 	# These plugins provide necessary tasks.
 	require('load-grunt-tasks')(grunt)
@@ -57,7 +61,7 @@ module.exports = (grunt) ->
 
 	# Basic tasks.
 	grunt.registerTask 'check', ['checkstrict', 'checklicense', 'coffeelint']
-	grunt.registerTask 'test', ['nodeunit', 'jscoverage_report']
+	grunt.registerTask 'test', ['coffeeCoverage', 'nodeunit', 'jscoverage_report']
 
 	# Default task.
 	grunt.registerTask 'default', ['check', 'test']
