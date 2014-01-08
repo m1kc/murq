@@ -139,3 +139,53 @@ murq = require '../lib/murq.coffee'
 		process.stdout.write = _write
 		test.strictEqual output, "12"
 		test.done()
+
+	'should threat `#$` as space': (test) ->
+		source = """
+			p Kill
+			p #$
+			p me
+		"""
+		output = ''
+		_write = process.stdout.write
+		process.stdout.write = (x) -> output += "#{x}"
+
+		quest = new murq.Quest(source)
+		quest.run()
+
+		process.stdout.write = _write
+		test.strictEqual output, 'Kill me'
+		test.done()
+
+	'should threat `#/$` as newline': (test) ->
+		source = """
+			p Kill#/$me
+		"""
+		output = ''
+		_write = process.stdout.write
+		process.stdout.write = (x) -> output += x
+
+		quest = new murq.Quest(source)
+		quest.run()
+
+		process.stdout.write = _write
+		test.strictEqual output, "Kill\nme"
+		test.done()
+
+	'should be ok if `p` or `pln` is called without an argument': (test) ->
+		source = """
+			pln Make
+			pln
+			p
+			pln install
+		"""
+		output = ''
+		_log = console.log
+		console.log = (x) -> output += "#{x}\n"
+
+		quest = new murq.Quest(source)
+		quest.run()
+
+		console.log = _log
+		test.strictEqual output, "Make\n\ninstall\n"
+		test.done()

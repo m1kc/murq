@@ -21,25 +21,26 @@ class Quest
 		@source = source.split("\n")
 
 	# TODO: implement operator `&`
-	# TODO: p or pln may be called without argument
 	run: ->
 		i = 0
 		while i < @source.length
 			s = @source[i]
 			s = s.trimRight()
+			s = s.replace /\#\$/g, ' '
+			s = s.replace /\#\/\$/g, "\n"
 			switch
 				when s.length is 0
 					### empty line, do nothing ###
-				when /;.*/.test(s)
+				when /^;/.test(s)
 					### it's a comment, do nothing ###
-				when /:.*/.test(s)
+				when /^:/.test(s)
 					### it's a label, do nothing ###
-				when /(pln|println) (.*)/i.test(s)
-					console.log s.match(/(pln|println) (.*)/i)[2]
-				when /(p|print) (.*)/i.test(s)
-					process.stdout.write s.match(/(p|print) (.*)/i)[2]
-				when /(goto) (.+)/i.test(s)
-					target = s.match(/(goto) (.*)/i)[2]
+				when /^(pln|println)\b/i.test(s)
+					console.log s.split(' ').slice(1).join(' ')
+				when /^(p|print)\b/i.test(s)
+					process.stdout.write s.split(' ').slice(1).join(' ')
+				when /^(goto) (.+)$/i.test(s)
+					target = s.match(/^(goto) (.*)$/i)[2]
 					next = @source.indexOf ":#{target}"
 					if next is -1
 						throw new Error "Line #{i+1}: Cannot find label: #{target}"
