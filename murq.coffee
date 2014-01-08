@@ -18,6 +18,7 @@
 
 fs = require 'fs'
 iconv = require 'iconv'
+jschardet = require 'jschardet'
 murq = require './lib/murq.coffee'
 
 console.log '// m1kc URQ //'
@@ -26,8 +27,10 @@ if process.argv.length != 3
 	console.log 'Usage: murq <filename>'
 else
 	filename = process.argv[2]
-	converter = new iconv.Iconv('cp1251', 'utf8')
 	sourceBuffer = fs.readFileSync(filename)
-	source = converter.convert(sourceBuffer)
-	quest = new murq.Quest(source.toString())
+	sourceEncoding = jschardet.detect(sourceBuffer).encoding
+	console.log "Auto-detected encoding: #{sourceEncoding}"
+	converter = new iconv.Iconv(sourceEncoding, 'utf8')
+	sourceBuffer = converter.convert(sourceBuffer)
+	quest = new murq.Quest(sourceBuffer.toString())
 	quest.run()
