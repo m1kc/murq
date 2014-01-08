@@ -14,15 +14,22 @@
 
 'use strict'
 
+readline = require 'readline'
+rl = readline.createInterface
+	input: process.stdin
+	output: process.stdout
+rl.pause()
+
 
 class Quest
 
 	constructor: (source) ->
 		@source = source.split("\n")
+		@vars = {}
 
 	# TODO: implement operator `&`
-	run: ->
-		i = 0
+	run: (start = 0) ->
+		i = start
 		while i < @source.length
 			s = @source[i]
 			s = s.trimRight()
@@ -46,7 +53,21 @@ class Quest
 						throw new Error "Line #{i+1}: Cannot find label: #{target}"
 					else
 						i = next # will jump to next line after label
-				when s is 'end'
+				when /^(end)$/i.test(s)
+					return
+				when /^(input) (.+)$/i.test(s)
+					targetVar = s.match(/^(input) (.+)$/i)[2]
+					ask = () =>
+						rl.question '>> ', (input) =>
+							input = parseInt(input, 10)
+							if isNaN(input)
+								rl.write "Not a number.\n"
+								ask()
+							else
+								@vars[targetVar] = input
+								rl.pause()
+								@run i+1
+					ask()
 					return
 				else
 					throw new Error "Line #{i+1}: Cannot parse line: #{s}"

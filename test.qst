@@ -13,4 +13,7 @@ goto two
 :four
 pln 4
 
+pln One more test. Enter a number:
+input s
+
 pln That's all, bye.
