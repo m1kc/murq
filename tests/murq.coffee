@@ -189,3 +189,19 @@ murq = require '../lib/murq.coffee'
 		console.log = _log
 		test.strictEqual output, "Make\n\ninstall\n"
 		test.done()
+
+	'should manipulate inventory': (test) ->
+		source = """
+			inv+ 4, eggs
+			inv+ moonshine
+			inv+ 2, moonshine
+			inv+ 6, eggs
+			inv- eggs
+			inv- moonshine
+			inv- 2, eggs
+		"""
+		quest = new murq.Quest(source)
+		quest.run()
+		test.strictEqual quest.inventory.eggs, 7
+		test.strictEqual quest.inventory.moonshine, 2
+		test.done()

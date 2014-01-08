@@ -26,6 +26,7 @@ class Quest
 	constructor: (source) ->
 		@source = source.split("\n")
 		@vars = {}
+		@inventory = {}
 
 	# TODO: implement operator `&`
 	run: (start = 0) ->
@@ -69,6 +70,38 @@ class Quest
 								@run i+1
 					ask()
 					return
+				when /^(inv\+) (\d+),\s?(.+)$/i.test(s)
+					what = s.match(/^(inv\+) (\d+),\s?(.+)$/i)[3]
+					count = parseInt(s.match(/^(inv\+) (\d+),\s?(.+)$/i)[2], 10)
+					if @inventory[what]?
+						@inventory[what] += count
+					else
+						@inventory[what] = count
+				when /^(inv\+) (.+)$/i.test(s)
+					what = s.match(/^(inv\+) (.+)$/i)[2]
+					if @inventory[what]?
+						@inventory[what] += 1
+					else
+						@inventory[what] = 1
+				when /^(inv\-) (\d+),\s?(.+)$/i.test(s)
+					what = s.match(/^(inv\-) (\d+),\s?(.+)$/i)[3]
+					count = parseInt(s.match(/^(inv\-) (\d+),\s?(.+)$/i)[2], 10)
+					if @inventory[what]?
+						@inventory[what] -= count
+						if @inventory[what] < 0
+							console.log "Warning: player had less than 0 of #{what}, setting to 0"
+							@inventory[what] = 0
+					else
+						console.log "Warning: player does not have #{what}"
+				when /^(inv\-) (.+)$/i.test(s)
+					what = s.match(/^(inv\-) (.+)$/i)[2]
+					if @inventory[what]?
+						@inventory[what] -= 1
+						if @inventory[what] < 0
+							console.log "Warning: player had less than 0 of #{what}, setting to 0"
+							@inventory[what] = 0
+					else
+						console.log "Warning: player does not have #{what}"
 				else
 					throw new Error "Line #{i+1}: Cannot parse line: #{s}"
 			i++
