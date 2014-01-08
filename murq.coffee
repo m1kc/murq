@@ -17,6 +17,7 @@
 'use strict'
 
 fs = require 'fs'
+iconv = require 'iconv'
 murq = require './lib/murq.coffee'
 
 console.log '// m1kc URQ //'
@@ -25,5 +26,8 @@ if process.argv.length != 3
 	console.log 'Usage: murq <filename>'
 else
 	filename = process.argv[2]
-	quest = new murq.Quest(fs.readFileSync(filename, 'utf-8'))
+	converter = new iconv.Iconv('cp1251', 'utf8')
+	sourceBuffer = fs.readFileSync(filename)
+	source = converter.convert(sourceBuffer)
+	quest = new murq.Quest(source.toString())
 	quest.run()
