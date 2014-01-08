@@ -16,6 +16,23 @@
 
 murq = require '../lib-cov/murq'
 
+
+output = ''
+_log = console.log
+_write = process.stdout.write
+
+startCapture = ->
+	output = ''
+	console.log = (x) ->
+		output += "#{x}\n"
+	process.stdout.write = (x) ->
+		output += "#{x}"
+
+endCapture = ->
+	console.log = _log
+	process.stdout.write = _write
+
+
 @exports =
 	'should ignore blank lines': (test) ->
 		source = "\n\n\n\n\n\n\n\n     \n     \n"
@@ -65,14 +82,12 @@ murq = require '../lib-cov/murq'
 			PLN me
 			PRINTLN now
 		"""
-		output = ''
-		_log = console.log
-		console.log = (x) -> output += "#{x}\n"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		console.log = _log
+		endCapture()
 		test.strictEqual output, "Kill\nme\nnow\n"
 		test.done()
 
@@ -82,14 +97,12 @@ murq = require '../lib-cov/murq'
 			P me
 			PRINT now
 		"""
-		output = ''
-		_write = process.stdout.write
-		process.stdout.write = (x) -> output += "#{x}"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		process.stdout.write = _write
+		endCapture()
 		test.strictEqual output, "Killmenow"
 		test.done()
 
@@ -110,14 +123,12 @@ murq = require '../lib-cov/murq'
 			:lab
 			p 3
 		"""
-		output = ''
-		_write = process.stdout.write
-		process.stdout.write = (x) -> output += "#{x}"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		process.stdout.write = _write
+		endCapture()
 		test.strictEqual output, "13"
 		test.done()
 
@@ -128,14 +139,12 @@ murq = require '../lib-cov/murq'
 			end
 			p 3
 		"""
-		output = ''
-		_write = process.stdout.write
-		process.stdout.write = (x) -> output += "#{x}"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		process.stdout.write = _write
+		endCapture()
 		test.strictEqual output, "12"
 		test.done()
 
@@ -145,14 +154,12 @@ murq = require '../lib-cov/murq'
 			p #$
 			p me
 		"""
-		output = ''
-		_write = process.stdout.write
-		process.stdout.write = (x) -> output += "#{x}"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		process.stdout.write = _write
+		endCapture()
 		test.strictEqual output, 'Kill me'
 		test.done()
 
@@ -160,14 +167,12 @@ murq = require '../lib-cov/murq'
 		source = """
 			p Kill#/$me
 		"""
-		output = ''
-		_write = process.stdout.write
-		process.stdout.write = (x) -> output += x
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		process.stdout.write = _write
+		endCapture()
 		test.strictEqual output, "Kill\nme"
 		test.done()
 
@@ -178,14 +183,12 @@ murq = require '../lib-cov/murq'
 			p
 			pln install
 		"""
-		output = ''
-		_log = console.log
-		console.log = (x) -> output += "#{x}\n"
+		startCapture()
 
 		quest = new murq.Quest(source)
 		quest.run()
 
-		console.log = _log
+		endCapture()
 		test.strictEqual output, "Make\n\ninstall\n"
 		test.done()
 
